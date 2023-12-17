@@ -102,6 +102,7 @@ fn main() -> Result<()> {
         i = set_light(i)?;
       }
       lc = 1;
+      std::thread::sleep(Duration::from_millis(10));
     } 
     if button.is_high() {
       neopixel(Rgb::from_hsv(0, 0, 0)?, &mut tx)?;
