@@ -1,3 +1,5 @@
+// Neopixel and Rgb code from github.com/esp-rs/esp-idf-hal/examples/rmt_neopixel.rs
+
 use anyhow::Result;
 use embedded_svc::wifi::{AuthMethod, ClientConfiguration, Configuration};
 use esp_idf_svc::hal::prelude::Peripherals;
