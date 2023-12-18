@@ -3,8 +3,6 @@
 use anyhow::Result;
 use embedded_svc::wifi::{AuthMethod, ClientConfiguration, Configuration};
 use esp_idf_svc::hal::prelude::Peripherals;
-use esp_idf_svc::hal::rmt::config::TransmitConfig;
-use esp_idf_svc::hal::rmt::*;
 use esp_idf_svc::hal::gpio::*;
 use esp_idf_svc::wifi::{BlockingWifi, EspWifi};
 use esp_idf_svc::log::EspLogger;
@@ -36,9 +34,11 @@ fn main() -> Result<()> {
   let mut button = PinDriver::input(peripherals.pins.gpio4)?;
   button.set_pull(Pull::Up)?;
 
-  let tx = TxRmtDriver::new(peripherals.rmt.channel0, peripherals.pins.gpio5, &TransmitConfig::new().clock_divider(1))?;
+  let chan = peripherals.rmt.channel0;
+  let gpio = peripherals.pins.gpio5;
 
-  let mut np = neopixel::Neopixel::new(tx); 
+  let mut np = neopixel::Neopixel::new(chan, gpio);
+
   np.set_color_hsv(0, 0, 100)?;
   std::thread::sleep(Duration::from_millis(500));
   np.set_color_hsv(0, 0, 0)?;
@@ -96,8 +96,8 @@ fn set_light(scene: u8) -> Result<u8> {
     0 => format!(r#"{{"method":"setPilot","params":{{"sceneId":{},"dimming":100}}}}"#, 12),
     _ => format!(r#"{{"method":"setPilot","params":{{"sceneId":{},"dimming":10}}}}"#, 6),
   };
-  //let light_addr = "192.168.4.145:38899";
-  let light_addr = "192.168.4.112:5514";
+  let light_addr = "192.168.4.145:38899";
+  //let light_addr = "192.168.4.112:5514";
   socket.send_to(msg.as_bytes(), light_addr)?;
   info!("Light set to scene {}", scene);
   Ok((scene + 1) % 2)

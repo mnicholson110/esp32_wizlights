@@ -1,18 +1,20 @@
 // Neopixel and Rgb code from github.com/esp-rs/esp-idf-hal/blob/master/examples/rmt_neopixel.rs
 use anyhow::Result;
+use esp_idf_svc::hal::peripheral::Peripheral;
 use esp_idf_svc::hal::rmt::*;
 use core::time::Duration;
+use esp_idf_svc::hal::gpio::*;
+use esp_idf_svc::hal::rmt::config::TransmitConfig;
 #[path = "rgb.rs"] mod rgb;
 
 pub struct Neopixel<'a> {
     tx: TxRmtDriver<'a>,
 }
 
-impl Neopixel<'_> {
-
-    pub fn new(tx: TxRmtDriver<'_>) -> Neopixel<'_> {
+impl<'a> Neopixel<'_> {
+    pub fn new<C: RmtChannel, G: OutputPin>(chan: impl Peripheral<P = C> + 'a, gpio: G) -> Neopixel<'a> {
         Neopixel {
-            tx
+            tx: TxRmtDriver::new(chan, gpio, &TransmitConfig::new().clock_divider(1)).unwrap(),
         }
     }
 
