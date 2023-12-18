@@ -1,5 +1,5 @@
 [package]
-name = "esp32test"
+name = "esp32_wizlights"
 version = "0.1.0"
 authors = ["Matt <mnicholson110@gmail.com>"]
 edition = "2021"
